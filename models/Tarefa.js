@@ -1,24 +1,23 @@
+// models/Tarefa.js
 const mongoose = require("mongoose");
 
 const TarefaSchema = new mongoose.Schema({
-  titulo: {
+  titulo: { type: String, required: true },
+  descricao: { type: String },
+  status: {
     type: String,
-    required: true
+    enum: ["BACKLOG", "TODO", "DOING", "DONE"],
+    default: "BACKLOG"
   },
-  descricao: {
-    type: String
-  },
-  data_inicio: {
+  data_criacao: {
     type: Date,
     default: Date.now
   },
-  data_prazo: {
-    type: Date
-  },
-  status: {
-    type: String,
-    enum: ["backlog", "todo", "doing", "complete"],
-    default: "backlog"
+  responsavel: { type: String },
+  lista_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Lista",
+    required: true
   },
   usuario_id: {
     type: mongoose.Schema.Types.ObjectId,
