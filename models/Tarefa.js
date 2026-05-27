@@ -1,29 +1,21 @@
-// models/Tarefa.js
 const mongoose = require("mongoose");
 
-const TarefaSchema = new mongoose.Schema({
-  titulo: { type: String, required: true },
-  descricao: { type: String },
-  status: {
+const tarefaSchema = new mongoose.Schema({
+  titulo: {
     type: String,
-    enum: ["BACKLOG", "TODO", "DOING", "DONE"],
-    default: "BACKLOG"
-  },
-  data_criacao: {
-    type: Date,
-    default: Date.now
-  },
-  responsavel: { type: String },
-  lista_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Lista",
     required: true
   },
-  usuario_id: {
+  descricao: String,
+  status: {
+    type: String,
+    enum: ["backlog", "todo", "doing", "complete"],
+    default: "backlog"
+  },
+  projeto: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Usuario",
+    ref: "Projeto",
     required: true
   }
 });
 
-module.exports = mongoose.model("Tarefa", TarefaSchema);
+module.exports = mongoose.model("Tarefa", tarefaSchema);
