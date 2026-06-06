@@ -1,13 +1,15 @@
 const express = require("express");
-const router = express.Router();
 
 const projetoController = require("../controllers/projetoController");
+const { autenticar } = require("../middlewares/authMiddleware");
 
-router.get("/", projetoController.listarProjetos);
+const router = express.Router();
+
+router.use(autenticar);
+
+router.get("/", projetoController.listarMeusProjetos);
 router.post("/", projetoController.criarProjeto);
 router.get("/:id", projetoController.buscarProjetoPorId);
-router.put("/:id", projetoController.atualizarProjeto);
 router.post("/:id/membros", projetoController.adicionarMembro);
-router.delete("/:id", projetoController.excluirProjeto);
 
 module.exports = router;
