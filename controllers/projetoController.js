@@ -1,5 +1,6 @@
 const Projeto = require("../models/Projeto");
 const Usuario = require("../models/Usuario");
+const Tarefa = require("../models/Tarefa");
 
 // Criar projeto: usuário logado vira admin automaticamente
 exports.criarProjeto = async (req, res) => {
@@ -51,6 +52,44 @@ exports.listarMeusProjetos = async (req, res) => {
 
     return res.status(500).json({
       erro: "Erro ao listar projetos",
+    });
+  }
+};
+// excluir projeto: somente admin do projeto pode excluir, e ao excluir o projeto, todas as tarefas relacionadas a ele também devem ser excluídas
+exports.excluirProjeto = async (req, res) => {
+  try {
+    const projeto = await Projeto.findById(req.params.id);
+
+    if (!projeto) {
+      return res.status(404).json({
+        erro: "Projeto não encontrado",
+      });
+    }
+
+    const usuarioNoProjeto = projeto.membros.find(
+      (membro) => membro.usuario.toString() === req.usuarioId
+    );
+
+    if (!usuarioNoProjeto || usuarioNoProjeto.tipo !== "admin") {
+      return res.status(403).json({
+        erro: "Apenas administradores podem excluir projetos",
+      });
+    }
+
+    await Tarefa.deleteMany({
+      projeto: projeto._id,
+    });
+
+    await projeto.deleteOne();
+
+    return res.json({
+      mensagem: "Projeto excluído com sucesso",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      erro: "Erro ao excluir projeto",
     });
   }
 };
